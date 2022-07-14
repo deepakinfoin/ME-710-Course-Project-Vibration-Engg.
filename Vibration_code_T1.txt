@@ -1,0 +1,31 @@
+clc
+clear all
+
+load T1_on.mat
+t = T1on.Times;
+a = T1on.AccelerationZms2;
+plot(t,a)
+dt=(t(2)-t(1));
+Fs=1/dt; 
+
+%x0_filtered = smooth(a);
+%figure
+%plot(t,x0_filtered)
+
+signal = a;                 % Signal of interest (for which FFT has to be taken)
+L=length(signal);
+w = hann(L);                % Hanning window
+x1 = signal.*w;
+
+X1 = fft(x1)/(L/2);
+X1 = X1(1:L/2);
+mx1 = abs(X1);                      % Take the magnitude of fft of x
+
+f = linspace(0,Fs/2,L/2);
+
+figure                          % Plotting
+plot(f*(2*pi),(mx1),'LineWidth',2);               % Convert Hz to radians
+xlabel('Frequency')
+ylabel('|Amplitude|')
+xlim([0 1200])
+ylim([0 1])
